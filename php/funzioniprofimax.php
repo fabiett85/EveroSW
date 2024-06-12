@@ -238,6 +238,7 @@ if (!empty($_REQUEST['azione']) && $_REQUEST['azione'] == 'update-import') {
 		//Scrivo su file il blocco di chiusura generale
 		fclose($fileESLUpdate);	
 		
+		$conn_mes->commit();
 		die('OK');
 		
 	} catch (Throwable $t) {
@@ -353,6 +354,7 @@ if (!empty($_REQUEST['azione']) && $_REQUEST['azione'] == 'update-execute') {
 		//Chiusura handle di lettura file
 		fclose($fileESLAssociate);
 		
+		$conn_mes->commit();
 		die('OK');
 		
 	} catch (Throwable $t) {

@@ -5,10 +5,10 @@ include("../vendor/autoload.php");
 
 
 
-require_once('MesSessionHandler.php');
+//require_once('MesSessionHandler.php');
 
-$sessionHandler = new MesSessionHandler();
-session_set_save_handler($sessionHandler, true);
+//$sessionHandler = new MesSessionHandler();
+//session_set_save_handler($sessionHandler, true);
 
 session_start();
 

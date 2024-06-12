@@ -6,14 +6,6 @@ include("../inc/conn.php");
 // logout
 if (!empty($_REQUEST['azione']) && $_REQUEST['azione'] == 'logout') {
 	unset($_SESSION['utente']);
-	$sth = $conn_mes->prepare(
-		"UPDATE sessioni SET
-		ses_LoggedIn = 0
-		WHERE ses_Id = :Id"
-	);
-	$sth->execute([
-		'Id' => session_id(),
-	]);
 	header("Location: login.php");
 	exit();
 }
@@ -41,18 +33,6 @@ if (!empty($_REQUEST['azione']) && $_REQUEST['azione'] == 'login' && !empty($_RE
 		$configurazione = $sth->fetch(PDO::FETCH_ASSOC);		
 
 
-		$sth = $conn_mes->prepare(
-			"SELECT COUNT(*) AS contoSessioni FROM sessioni
-			WHERE ses_LoggedIn = 1"
-		);
-		$sth->execute();
-		$contoSessioni = $sth->fetch(PDO::FETCH_ASSOC)['contoSessioni'];
-
-		if (intval($contoSessioni) >= sessioniMassime) {
-			$conn_mes->rollBack();
-			die('MAX_' . sessioniMassime);
-		}
-
 		// Se ho trovato un utente con questi dati
 		if (password_verify($_REQUEST['password'], $utente['Password'])) {
 			if (password_needs_rehash($utente['Password'], PASSWORD_DEFAULT)) {
@@ -69,15 +49,6 @@ if (!empty($_REQUEST['azione']) && $_REQUEST['azione'] == 'login' && !empty($_RE
 			// Sposto tutti i dati dal recordset alla sessione
 			$_SESSION['utente'] = $utente;
 			$_SESSION['configurazione'] = $configurazione;
-
-			$sth = $conn_mes->prepare(
-				"UPDATE sessioni SET
-				ses_LoggedIn = 1
-				WHERE ses_Id = :Id"
-			);
-			$sth->execute([
-				'Id' => session_id(),
-			]);
 
 			$conn_mes->commit();
 			die('OK');

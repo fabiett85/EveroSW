@@ -1,130 +1,5 @@
 // Funzione per verifica stato di funzionamento SCADA (watchdog)
-function WDVerifica() {
-	// Invoco la funzione di verifica Watchdog
-	$.post('utilities.php', { azione: 'verifica-watchdog-SCADA' }).done(function (data) {
-		if (data == 'AVARIA_SCADA') {
-			swal({
-				title: 'ATTENZIONE!',
-				text: 'Sistema SCADA non attivo: ricezione dati macchina interrotta.',
-				icon: 'warning',
-				button: 'OK',
 
-				closeModal: true,
-			});
-		}
-	});
-}
-
-// Funzione (Read Data From SCADA)
-function readDataFromSCADA() {
-	// Invoco la funzione di ricezione segnali da SCADA
-	$.post('dialogo_SCADA.php', { azione: 'read-data-from-SCADA' }).done(function (data) {
-		// Nessun ritorno
-	});
-}
-
-// Funzione (Write Downtime)
-function writeDowntime() {
-	// Invoco la funzione di ricezione segnali da SCADA
-	/* $.post('registrazione_downtime.php', { azione: 'write-downtime' }).done(function (data) {
-		// Nessun ritorno
-	}); */
-}
-
-/**
- * @param numOfSteps: Total number steps to get color, means total colors
- * @param step: The step number, means the order of the color
- */
-function rainbow(numOfSteps, step) {
-	// This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.
-	// Adam Cole, 2011-Sept-14
-	// HSV to RBG adapted from: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
-	var r, g, b;
-	var h = step / numOfSteps;
-	var i = ~~(h * 6);
-	var f = h * 6 - i;
-	var q = 1 - f;
-	switch (i % 6) {
-		case 0:
-			r = 1;
-			g = f;
-			b = 0;
-			break;
-		case 1:
-			r = q;
-			g = 1;
-			b = 0;
-			break;
-		case 2:
-			r = 0;
-			g = 1;
-			b = f;
-			break;
-		case 3:
-			r = 0;
-			g = q;
-			b = 1;
-			break;
-		case 4:
-			r = f;
-			g = 0;
-			b = 1;
-			break;
-		case 5:
-			r = 1;
-			g = 0;
-			b = q;
-			break;
-	}
-	var c =
-		'#' +
-		('00' + (~~(r * 255)).toString(16)).slice(-2) +
-		('00' + (~~(g * 255)).toString(16)).slice(-2) +
-		('00' + (~~(b * 255)).toString(16)).slice(-2);
-	return c;
-}
-
-function buttonFilename(nome, dataInizio = null, dataFine = null) {
-	var filename = nome;
-	if (dataInizio) {
-		dataInizio = moment(dataInizio);
-		filename += '_' + dataInizio.format('YYYYMMDD');
-	}
-	if (dataFine) {
-		dataFine = moment(dataFine);
-		filename += '_' + dataFine.format('YYYYMMDD');
-	}
-	return filename;
-}
-
-function buttonTitle(nome, dataInizio = null, dataFine = null) {
-	var filename = nome;
-	if (dataInizio) {
-		dataInizio = moment(dataInizio);
-		filename += ' - ' + dataInizio.format('DD/MM/YYYY');
-	}
-	if (dataFine) {
-		dataFine = moment(dataFine);
-		filename += ' - ' + dataFine.format('DD/MM/YYYY');
-	}
-	return filename;
-}
-
-var linguaItaliana = {
-	processing: 'Caricamento...',
-	search: 'Ricerca: ',
-	lengthMenu: '_MENU_ righe per pagina',
-	zeroRecords: 'Nessun record presente',
-	info: 'Pagina _PAGE_ di _PAGES_',
-	infoEmpty: 'Nessun dato disponibile',
-	infoFiltered: '(filtrate da _MAX_ righe totali)',
-	paginate: {
-		first: 'Prima',
-		last: 'Ultima',
-		next: 'Prossima',
-		previous: 'Precedente',
-	},
-};
 
 //VALORE DEFAULT SELECTPICKER
 $('.selectpicker').selectpicker({
@@ -180,20 +55,6 @@ $('.selectpicker').selectpicker({
 				'overflow-y': 'scroll',
 			});
 		});
-
-		//azzeramento sessione locale su clic sul pulsante di logout
-		$('#logout-sistema').on('click', function () {
-			sessionStorage.clear();
-		});
-
-		// Con cadenza regolare (ogni 5 minuti) invoco la funzione di verifica stato di funzionamento SCADA
-		/* setInterval(function () {
-			WDVerifica;
-		}, 300000); */
-
-		writeDowntime();
-		// Con cadenza regolare (ogni 20 secondi) invoco la funzione di verifica ricezione comandi da SCADA
-		setInterval(writeDowntime, 20000);
 
 		/*
 		$(".voce-menu").click(function () {
@@ -310,13 +171,6 @@ $('.selectpicker').selectpicker({
 		});
 	});
 
-	$('body').click(function () {
-		$.post('impress.php');
-	})
-
-	$('body').keypress(function () {
-		$.post('impress.php');
-	})
 })(jQuery);
 
 

@@ -119,7 +119,7 @@
 						swal({
 							icon: 'error',
 							title: 'Errore!',
-							html: data,
+							text: data,
 							customClass: {
 								confirmButton: 'btn btn-primary mx-1',
 								cancelButton: 'btn btn-secondary mx-1',
@@ -143,10 +143,11 @@
 		$.get("aggiornamentotabellaesl.php", { azione: "sincronizza-tabella" })
 		.done(function(data) {
 			if(data == 'OK') {
+				tabellaEsl.ajax.reload(null, false);
 				swal({
 					icon: 'success',
 					title: 'Operazione effettuata!',
-					text: 'Dati acquisiti correttamente.',
+					text: 'Dati aggiornati correttamente!',
 					customClass: {
 						confirmButton: 'btn btn-primary mx-1',
 						cancelButton: 'btn btn-secondary mx-1',
@@ -155,10 +156,11 @@
 				});
 			}
 			else {
+				tabellaEsl.ajax.reload(null, false);
 				swal({
 					icon: 'error',
 					title: 'Errore!',
-					html: data,
+					text: data,
 					customClass: {
 						confirmButton: 'btn btn-primary mx-1',
 						cancelButton: 'btn btn-secondary mx-1',
