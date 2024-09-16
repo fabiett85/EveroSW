@@ -639,13 +639,12 @@ function sincroData_Cantina_adm($data,$con,$prova){
 			echo '<script type="text/javascript">alert("Errore query di sincronizzazione dati tra tabella Gestionale e tabella Esl.");</script>';
 		}
 		else if ($erroreAperturaSorgente == 1) {
-		
-	echo '<script type="text/javascript">alert("Errore procedura di sincronizzazione!\nFile sorgente non trovato o tabella SQL di scambio non inizializzata.");</script>';
+			echo '<script type="text/javascript">alert("Errore procedura di sincronizzazione!\nFile sorgente non trovato o tabella SQL di scambio non inizializzata.");</script>';
 		}
 		else {
 			echo '<script type="text/javascript">alert("Sincronizzazione dati conclusa correttamente.");</script>';
 		}
 	}
 	
-	
-	?>
+}
+?>
