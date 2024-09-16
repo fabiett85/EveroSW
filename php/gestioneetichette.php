@@ -44,8 +44,8 @@ if (!empty($_REQUEST['azione']) && $_REQUEST['azione'] == 'mostra') {
 					<span class="mdi mdi-lead-pencil mdi-18px"></span>
 					</button>
 					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<a class="dropdown-item modifica-risorsa" data-id_riga="' . $riga['Id'] . '"><i class="mdi mdi-account-edit"></i> Modifica</a>
-						<a class="dropdown-item cancella-risorsa" data-id_riga="' . $riga['Id'] . '"><i class="mdi mdi-trash-can"></i> Elimina</a>
+						<a class="dropdown-item modifica-esl" data-id_riga="' . $riga['Id'] . '"><i class="mdi mdi-account-edit"></i> Modifica</a>
+						<a class="dropdown-item cancella-esl" data-id_riga="' . $riga['Id'] . '"><i class="mdi mdi-trash-can"></i> Elimina</a>
 					</div>
 				</div>'
 		);
@@ -58,7 +58,7 @@ if (!empty($_REQUEST['azione']) && $_REQUEST['azione'] == 'mostra') {
 // RISORSE: RECUPERO VALORI DELLA RISORSA SELEZIONATA
 if (!empty($_REQUEST['azione']) && $_REQUEST['azione'] == 'recupera' && !empty($_REQUEST['codice'])) {
 	// estraggo la lista
-	$sth = $conn_mes->prepare("SELECT * FROM risorse WHERE ris_IdRisorsa = :codice", [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]);
+	$sth = $conn_mes->prepare("SELECT * FROM Cantina WHERE Id = :codice", [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]);
 	$sth->execute([':codice' => $_REQUEST['codice']]);
 	$riga = $sth->fetch(PDO::FETCH_ASSOC);
 
@@ -164,6 +164,150 @@ if (!empty($_REQUEST['azione']) && $_REQUEST['azione'] == 'recupera' && !empty($
 	<button type="button" id="nuova-esl" class="mdi mdi-button">NUOVA LAVAGNA</button>
 
 
+	<!-- Opup modale di modifica/inserimento lavagna elettronica-->
+	<div class="modal fade" id="modal-esl" tabindex="-1" role="dialog" aria-labelledby="modal-esl-label"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header py-1">
+					<h5 class="modal-title" id="modal-esl-label">Nuova lavagna</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Chiudi">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form class="forms-sample" id="form-esl">
+
+						<div class="row">
+
+							<div class="col-2">
+								<div class="form-group">
+									<label for="Codice_etichetta">Codice lavagna</label><span style='color:red'> *</span>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica obbligatorio"name="Codice_etichetta" id="Codice_etichetta" autocomplete="off">
+								</div>
+							</div>
+							
+							<div class="col-2">
+								<div class="form-group">
+									<label for="Tipo_etichetta">Tipo lavagna</label>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica"
+										name="Tipo_etichetta" id="Tipo_etichetta" autocomplete="off" value=1>
+								</div>
+							</div>
+
+							<div class="col-2">
+								<div class="form-check pt-4">
+									<input id="Abilitazione" type="checkbox">
+									<label for="Abilitazione" style="font-weight: normal;">Abilitazione</label>
+								</div>
+							</div>	
+							<div class="col-2">
+								<div class="form-group">
+									<label for="Numero_Serbatoio">Serbatoio</label><span style='color:red'> *</span>
+									<select class="form-control form-control-sm dati-popup-modifica selectpicker obbligatorio" data-live-search="true" id="Numero_Serbatoio" name="Numero_Serbatoio" >
+										<?php
+										$sth = $conn_mes->prepare("SELECT Contenitori.* FROM Contenitori", [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]);
+										$sth->execute();
+										$serbatoi = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+										foreach ($serbatoi as $serbatoio) {
+											echo "<option value=" . $serbatoio['Codice_contenitore'] . ">" . $serbatoio['Nome'] . "</option>";
+										}
+										?>
+									</select>
+								</div>
+							</div>
+
+							<div class="col-2">
+								<div class="form-group">
+									<label for="ESL_campo_1">Capacità</label>
+									<input type="number" class="form-control form-control-sm dati-popup-modifica"
+										name="ESL_campo_1" id="ESL_campo_1" autocomplete="off">
+								</div>
+							</div>	
+							<div class="col-2">
+								<div class="form-group">
+									<label for="ESL_campo_2">Categoria</label>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica"
+										name="ESL_campo_2" id="ESL_campo_2" autocomplete="off">
+								</div>
+							</div>
+							<div class="col-3">
+								<div class="form-group">
+									<label for="ESL_campo_3">Nome prodotto</label>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica"
+										name="ESL_campo_3" id="ESL_campo_3" autocomplete="off">
+								</div>
+							</div>	
+							<div class="col-3">
+								<div class="form-group">
+									<label for="ESL_campo_4">Atto/certificato</label>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica"
+										name="ESL_campo_4" id="ESL_campo_4" autocomplete="off">
+								</div>
+							</div>	
+							<div class="col-3">
+								<div class="form-group">
+									<label for="ESL_campo_5">Classificazione</label>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica"
+										name="ESL_campo_5" id="ESL_campo_5" autocomplete="off">
+								</div>
+							</div>		
+							<div class="col-3">
+								<div class="form-group">
+									<label for="ESL_campo_6">Anno</label>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica"
+										name="ESL_campo_6" id="ESL_campo_6" autocomplete="off">
+								</div>
+							</div>
+							<div class="col-3">
+								<div class="form-group">
+									<label for="ESL_campo_7">Colore</label>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica"
+										name="ESL_campo_7" id="ESL_campo_7" autocomplete="off">
+								</div>
+							</div>		
+							<div class="col-3">
+								<div class="form-group">
+									<label for="ESL_campo_8">Stato</label>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica"
+										name="ESL_campo_8" id="ESL_campo_8" autocomplete="off">
+								</div>
+							</div>		
+							<div class="col-3">
+								<div class="form-group">
+									<label for="ESL_campo_9">Bio</label>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica"
+										name="ESL_campo_9" id="ESL_campo_9" autocomplete="off">
+								</div>
+							</div>		
+							<div class="col-3">
+								<div class="form-group">
+									<label for="ESL_campo_10">Menzioni</label>
+									<input type="text" class="form-control form-control-sm dati-popup-modifica"
+										name="ESL_campo_10" id="ESL_campo_10" autocomplete="off">
+								</div>
+							</div>																																																																																	
+													
+		
+
+							
+						</div>
+
+						<input type="hidden" id="Id" name="Id" value="">
+						<input type="hidden" id="azione" name="azione" value="nuovo">
+
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" id="salva-esl">Salva</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
 
 
 	<?php include("inc_js.php") ?>

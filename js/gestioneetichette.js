@@ -94,6 +94,87 @@
 		
 	});	
 
+	//VALORE DEFAULT SELECTPICKER
+	$(".selectpicker").selectpicker({
+		noneSelectedText : 'Seleziona...'
+	});
+
+	//Etichette: aggiunta nuova lavagna elettronica
+	$('#nuova-esl').on('click',function(){
+		
+		alert('nuova esl');
+		$('#form-esl input').removeClass('errore');
+		
+		$('#form-esl')[0].reset();
+		$('#form-esl .selectpicker').val('default');
+		$('#form-esl .selectpicker').selectpicker('refresh');
+		
+		$('#form-esl').find('input#azione').val('nuovo');
+		$('#modal-esl-label').text('INSERIMENTO NUOVA LAVAGNA ELETTRONICA');
+		$("#modal-esl").modal("show");
+		
+	});
+	
+	//Etichette: cancella lavagna elettronica
+	$('body').on('click','a.cancella-esl',function(e){
+		
+		e.preventDefault();
+
+		alert('cancella esl');
+		
+	});	
+
+	//Etichette: modifica lavagna elettronica
+	$('body').on('click','a.modifica-esl',function(e){
+		
+		e.preventDefault();
+		
+		var idRiga = $(this).data('id_riga');
+
+		$.post("gestioneetichette.php", { azione: "recupera", codice: idRiga })
+		.done(function(data) {
+			
+			$('#form-esl')[0].reset();
+			$('#form-esl input').removeClass('errore');
+			
+			var dati = JSON.parse(data);
+			
+			
+			//  Visulizzo nel popup i valori recuperati
+			for(var chiave in dati)
+			{
+				if(dati.hasOwnProperty(chiave))
+				{
+					$('#form-esl').find('input#' + chiave).val(dati[chiave]);
+					$('#form-esl select#' + chiave).val(dati[chiave]);
+					$('#form-esl select#' + chiave).selectpicker('refresh');
+				}
+			}
+			
+			$('#ris_LineaProduzione').val(dati['ris_LineaProduzione']);
+			
+			// Gestisco a parte i valori relativi alle checkbox:
+			// 'abilitazione misure'
+			if (dati['Abilitazione'] == 1) {
+				$('#form-esl').find('input#Abilitazione').prop('checked', true);
+			}
+			else {
+				$('#form-esl').find('input#Abilitazione').prop('checked', false);
+			}
+
+			// Aggiungo il campo 'IdRisorsa' come id della modifica
+			$('#form-esl').find('input#Id').val(dati['Id']);
+			$('#form-esl').find('input#azione').val('modifica');
+			$('#modal-esl-label').text('MODIFICA DATI LAVAGNA');
+		
+			$("#modal-esl").modal("show");
+		});
+		
+		return false;		
+		
+	});		
+
+
 
 	//Funzione per gestione aggiornamento lavagne elettroniche 
 	$('#btn-update-lavagne').click(function(){
